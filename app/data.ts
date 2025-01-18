@@ -5,7 +5,6 @@ import invariant from "tiny-invariant";
 
 type Contact = {
   id?: string;
-  marvelId?: string;
   first?: string;
   last?: string;
   avatar?: string;
@@ -13,11 +12,9 @@ type Contact = {
   url?: string;
   notes?: string;
   favorite?: boolean;
-  test?: string;
 };
 
 export type ContactRecord = Contact & {
-  id: string;
   createdAt: string;
 };
 
@@ -91,7 +88,7 @@ export async function deleteContact(id: string) {
 
 [
   {
-    marvelId: "1009368",
+    id: "1009368",
     first: "Tony",
     last: "Stark",
     avatar:
@@ -103,7 +100,7 @@ export async function deleteContact(id: string) {
     favorite: true,
   },
   {
-    marvelId: "1009220",
+    id: "1009220",
     first: "Steve",
     last: "Rogers",
     avatar:
@@ -115,7 +112,7 @@ export async function deleteContact(id: string) {
     favorite: false,
   },
   {
-    marvelId: "1009610",
+    id: "1009610",
     first: "Peter",
     last: "Parker",
     avatar:
@@ -129,6 +126,5 @@ export async function deleteContact(id: string) {
 ].forEach((contact) => {
   fakeContacts.create({
     ...contact,
-    id: `${contact.superName.toLowerCase().replace(" ", "-")}`,
   });
 });

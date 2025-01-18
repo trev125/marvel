@@ -1,22 +1,44 @@
-import { Form, json, useLoaderData, useFetcher } from "@remix-run/react";
-import type { FunctionComponent } from "react";
-
-import type { ContactRecord } from "../data";
+import { Form, useLoaderData, NavLink } from "@remix-run/react";
 import { getContact, updateContact } from "../data";
+import type { Character } from "../types/types";
 
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
-// existing imports
 import invariant from "tiny-invariant";
 
-// existing imports
-
+// Everything in the loader() is run on the server even though it is in a client component file.
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   invariant(params.contactId, "Missing contactId param");
+
+  const baseUrl = process.env.BASE_URL;
+  const apiKey = process.env.API_KEY;
+  const hash = process.env.HASH;
+  const ts = process.env.TS;
+
   const contact = await getContact(params.contactId);
   if (!contact) {
     throw new Response("Not Found", { status: 404 });
   }
-  return json({ contact });
+
+  const response = await fetch(
+    `${baseUrl}/characters/${contact.id}?apikey=${apiKey}&hash=${hash}&ts=${ts}`,
+    {
+      headers: {
+        "content-type": "application/json; charset=utf-8",
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Response("Failed to fetch character data", {
+      status: response.status,
+    });
+  }
+
+  const {
+    data: { results: characterData },
+  }: { data: { results: Character[] } } = await response.json();
+
+  return Response.json({ character: characterData[0] });
 };
 
 export const action = async ({ params, request }: ActionFunctionArgs) => {
@@ -28,7 +50,17 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
 };
 
 export default function Contact() {
-  const { contact } = useLoaderData<typeof loader>();
+  const { character } = useLoaderData<{ character: Character }>();
+  const {
+    name,
+    thumbnail,
+    description,
+    comics,
+    series,
+    stories,
+    events,
+    urls,
+  } = character;
 
   return (
     <div
@@ -37,35 +69,105 @@ export default function Contact() {
     >
       <div className="flex items-center">
         <img
-          alt={`${contact.superName} avatar`}
-          key={contact.avatar}
-          src={contact.avatar}
+          alt={`${name} avatar`}
+          key={thumbnail.path}
+          src={`${thumbnail.path}/detail.${thumbnail.extension}`}
           className="w-20 h-20 rounded-full border border-gray-300"
         />
 
         <div className="ml-4 flex-1">
           <h1 className="text-xl font-bold flex items-center gap-2">
-            {contact.superName ? <>{contact.superName}</> : <i>No Name</i>}
-            <Favorite contact={contact} />
+            {name ? <>{name}</> : <i>No Name</i>}
           </h1>
 
-          {contact.first || contact.last ? (
-            <p className="text-blue-600">
-              <a
-                href={contact.url}
-                target="_blank"
-                className="hover:underline"
-                rel="noreferrer"
-              >
-                {contact.first} {contact.last}
-              </a>
-            </p>
-          ) : null}
-
-          {contact.notes ? (
-            <p className="text-gray-600 mt-1">{contact.notes}</p>
+          {description ? (
+            <p className="text-gray-600 mt-1">{description}</p>
           ) : null}
         </div>
+      </div>
+
+      <div className="mt-4">
+        <h2 className="text-lg font-bold">Comics</h2>
+        <ul className="list-disc pl-6">
+          {comics.items.map((comic) => {
+            const comicId = comic.resourceURI.match(/\/(\d+)$/)?.[1];
+            return (
+              <li key={comic.name}>
+                {comicId && (
+                  <NavLink to={`/comics/${comicId}`}>{comic.name}</NavLink>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
+      <div className="mt-4">
+        <h2 className="text-lg font-bold">Series</h2>
+        <ul className="list-disc pl-6">
+          {series.items.map((seriesItem) => {
+            const seriesId = seriesItem.resourceURI.match(/\/(\d+)$/)?.[1];
+            return (
+              <li key={seriesItem.name}>
+                {seriesId && (
+                  <NavLink to={`/series/${seriesId}`}>
+                    {seriesItem.name}
+                  </NavLink>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
+      <div className="mt-4">
+        <h2 className="text-lg font-bold">Stories</h2>
+        <ul className="list-disc pl-6">
+          {stories.items.map((story) => {
+            const storyId = story.resourceURI.match(/\/(\d+)$/)?.[1];
+            return (
+              <li key={story.name}>
+                {storyId && (
+                  <NavLink to={`/stories/${storyId}`}>{story.name}</NavLink>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
+      <div className="mt-4">
+        <h2 className="text-lg font-bold">Events</h2>
+        <ul className="list-disc pl-6">
+          {events.items.map((event) => {
+            const eventId = event.resourceURI.match(/\/(\d+)$/)?.[1];
+            return (
+              <li key={event.name}>
+                {eventId && (
+                  <NavLink to={`/events/${eventId}`}>{event.name}</NavLink>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
+      <div className="mt-4">
+        <h2 className="text-lg font-bold">External Links</h2>
+        <ul>
+          {urls.map((url) => (
+            <li key={url.type}>
+              <a
+                href={url.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:underline"
+              >
+                {url.type.charAt(0).toUpperCase() + url.type.slice(1)}
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <div className="mt-4 flex gap-4">
@@ -94,25 +196,3 @@ export default function Contact() {
     </div>
   );
 }
-
-const Favorite: FunctionComponent<{
-  contact: Pick<ContactRecord, "favorite">;
-}> = ({ contact }) => {
-  const fetcher = useFetcher();
-  const favorite = fetcher.formData
-    ? fetcher.formData.get("favorite") === "true"
-    : contact.favorite;
-
-  return (
-    <fetcher.Form method="post">
-      <button
-        aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
-        name="favorite"
-        value={favorite ? "false" : "true"}
-        className={`text-xl ${favorite ? "text-yellow-400" : "text-gray-400"}`}
-      >
-        {favorite ? "★" : "☆"}
-      </button>
-    </fetcher.Form>
-  );
-};

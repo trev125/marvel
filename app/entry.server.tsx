@@ -7,10 +7,13 @@
 import { PassThrough } from "node:stream";
 
 import type { AppLoadContext, EntryContext } from "@remix-run/node";
+import { config } from "dotenv";
 import { createReadableStreamFromReadable } from "@remix-run/node";
 import { RemixServer } from "@remix-run/react";
 import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
+
+config(); // Load environment variables
 
 const ABORT_DELAY = 5_000;
 
