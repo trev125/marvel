@@ -5,7 +5,6 @@ import invariant from "tiny-invariant";
 
 type Contact = {
   id?: string;
-  marvelId?: string;
   first?: string;
   last?: string;
   avatar?: string;
@@ -17,7 +16,6 @@ type Contact = {
 };
 
 export type ContactRecord = Contact & {
-  id: string;
   createdAt: string;
 };
 
@@ -25,12 +23,17 @@ const fakeContacts = {
   records: {} as Record<string, ContactRecord>,
 
   async getAll(): Promise<ContactRecord[]> {
+    const test = fakeContacts;
+    console.log({ test });
     return Object.keys(fakeContacts.records)
       .map((key) => fakeContacts.records[key])
       .sort(sortBy("-createdAt", "last"));
   },
 
   async get(id: string): Promise<ContactRecord | null> {
+    const test = fakeContacts.records;
+    const hi = fakeContacts.records[id];
+    console.log({ hi, test });
     return fakeContacts.records[id] || null;
   },
 
@@ -91,7 +94,7 @@ export async function deleteContact(id: string) {
 
 [
   {
-    marvelId: "1009368",
+    id: "1009368",
     first: "Tony",
     last: "Stark",
     avatar:
@@ -103,7 +106,7 @@ export async function deleteContact(id: string) {
     favorite: true,
   },
   {
-    marvelId: "1009220",
+    id: "1009220",
     first: "Steve",
     last: "Rogers",
     avatar:
@@ -115,7 +118,7 @@ export async function deleteContact(id: string) {
     favorite: false,
   },
   {
-    marvelId: "1009610",
+    id: "1009610",
     first: "Peter",
     last: "Parker",
     avatar:
@@ -129,6 +132,5 @@ export async function deleteContact(id: string) {
 ].forEach((contact) => {
   fakeContacts.create({
     ...contact,
-    id: `${contact.superName.toLowerCase().replace(" ", "-")}`,
   });
 });
