@@ -1,5 +1,7 @@
 # Marvel API Project
 
+[View the TODO here](TODO.md)
+
 ## Helpful docs
 
 - 📖 [Remix docs](https://remix.run/docs)

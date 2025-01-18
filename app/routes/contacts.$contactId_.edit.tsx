@@ -1,5 +1,9 @@
+/**
+ * To see more comments about what the top level functions do, see the contacts.$contactId.tsx file.
+ */
+
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { Form, useLoaderData, useNavigate } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
@@ -19,7 +23,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   if (!contact) {
     throw new Response("Not Found", { status: 404 });
   }
-  return json({ contact });
+  return Response.json({ contact });
 };
 
 export default function EditContact() {

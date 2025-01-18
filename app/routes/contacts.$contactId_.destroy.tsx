@@ -1,3 +1,7 @@
+/**
+ * To see more comments about what the top level functions do, see the contacts.$contactId.tsx file.
+ */
+
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import invariant from "tiny-invariant";
