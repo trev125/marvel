@@ -86,42 +86,22 @@ export async function deleteContact(id: string) {
   fakeContacts.destroy(id);
 }
 
+/* We could get the superName from the API, but it's easier to just hardcode.
+ * Especially because we have a limit on how many API requests we can make a day
+ * and we don't want to hit that limit while developing.
+ */
 [
   {
     id: "1009368",
-    first: "Tony",
-    last: "Stark",
-    avatar:
-      "http://i.annihil.us/u/prod/marvel/i/mg/9/c0/527bb7b37ff55/detail.jpg",
     superName: "Iron Man",
-    url: "https://www.marvel.com/characters/iron-man-tony-stark",
-    notes:
-      "Wounded, captured and forced to build a weapon by his enemies, billionaire industrialist Tony Stark instead created an advanced suit of armor to save his life and escape captivity. Now with a new outlook on life, Tony uses his money and intelligence to make the world a safer, better place as Iron Man.",
-    favorite: true,
   },
   {
     id: "1009220",
-    first: "Steve",
-    last: "Rogers",
-    avatar:
-      "http://i.annihil.us/u/prod/marvel/i/mg/3/50/537ba56d31087/detail.jpg",
     superName: "Captain America",
-    url: "https://www.marvel.com/characters/captain-america-steve-rogers",
-    notes:
-      "Vowing to serve his country any way he could, young Steve Rogers took the super soldier serum to become America's one-man army. Fighting for the red, white and blue for over 60 years, Captain America is the living, breathing symbol of freedom and liberty.",
-    favorite: false,
   },
   {
     id: "1009610",
-    first: "Peter",
-    last: "Parker",
-    avatar:
-      "http://i.annihil.us/u/prod/marvel/i/mg/3/50/526548a343e4b/detail.jpg",
     superName: "Spider-Man",
-    url: "https://www.marvel.com/characters/spider-man-peter-parker",
-    notes:
-      "Bitten by a radioactive spider, high school student Peter Parker gained the speed, strength and powers of a spider. Adopting the name Spider-Man, Peter hoped to start a career using his new abilities. Taught that with great power comes great responsibility, Spidey has vowed to use his powers to help people.",
-    favorite: false,
   },
 ].forEach((contact) => {
   fakeContacts.create({

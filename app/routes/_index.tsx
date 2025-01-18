@@ -1,3 +1,7 @@
+/**
+ * This is the main page that will show up when you go to the root URL.
+ */
+
 export default function Index() {
   return (
     <p id="index-page">

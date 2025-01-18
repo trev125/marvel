@@ -1,3 +1,7 @@
+/**
+ * To see more comments about what the top level functions do, see the contacts.$contactId.tsx file.
+ */
+
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import type { LoaderFunction } from "@remix-run/node";

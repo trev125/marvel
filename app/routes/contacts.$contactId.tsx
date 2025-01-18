@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars -- temp ignoring this since we might get to Forms later */
 import { Form, useLoaderData, NavLink } from "@remix-run/react";
 import { getContact, updateContact } from "../data";
 import type { Character } from "../types/types";
@@ -5,7 +6,11 @@ import type { Character } from "../types/types";
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
 import invariant from "tiny-invariant";
 
-// Everything in the loader() is run on the server even though it is in a client component file.
+/*
+ * Everything in the loader() is run on the server even though it is in a client component file.
+ * This lets us put secrets (apiKey) directly in here, but they are not leaked in the client bundle.
+ * We can utilize this to do server-side data fetching and other server-side operations directly in this file.
+ */
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   invariant(params.contactId, "Missing contactId param");
 
@@ -41,6 +46,10 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   return Response.json({ character: characterData[0] });
 };
 
+/*
+ * This action is run on the server when the form is submitted.
+ * This is where we can update the contact in the database, if we get to that.
+ */
 export const action = async ({ params, request }: ActionFunctionArgs) => {
   invariant(params.contactId, "Missing contactId param");
   const formData = await request.formData();
@@ -49,6 +58,10 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
   });
 };
 
+/*
+ * This is the client-side component that is rendered in the browser.
+ * It is hydrated with the data from the loader() function.
+ */
 export default function Contact() {
   const { character } = useLoaderData<{ character: Character }>();
   const {
@@ -170,7 +183,11 @@ export default function Contact() {
         </ul>
       </div>
 
-      <div className="mt-4 flex gap-4">
+      {/**
+       * We might get back to this at some point
+       */}
+
+      {/* <div className="mt-4 flex gap-4">
         <Form action="edit">
           <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">
             Edit
@@ -192,7 +209,7 @@ export default function Contact() {
             Delete
           </button>
         </Form>
-      </div>
+      </div> */}
     </div>
   );
 }
