@@ -12,7 +12,6 @@ type Contact = {
   url?: string;
   notes?: string;
   favorite?: boolean;
-  test?: string;
 };
 
 export type ContactRecord = Contact & {
@@ -23,17 +22,12 @@ const fakeContacts = {
   records: {} as Record<string, ContactRecord>,
 
   async getAll(): Promise<ContactRecord[]> {
-    const test = fakeContacts;
-    console.log({ test });
     return Object.keys(fakeContacts.records)
       .map((key) => fakeContacts.records[key])
       .sort(sortBy("-createdAt", "last"));
   },
 
   async get(id: string): Promise<ContactRecord | null> {
-    const test = fakeContacts.records;
-    const hi = fakeContacts.records[id];
-    console.log({ hi, test });
     return fakeContacts.records[id] || null;
   },
 

@@ -1,14 +1,11 @@
 import { Form, useLoaderData, NavLink } from "@remix-run/react";
-// import type { FunctionComponent } from "react";
-
-// import type { ContactRecord } from "../data";
 import { getContact, updateContact } from "../data";
 import type { Character } from "../types/types";
 
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
 import invariant from "tiny-invariant";
 
-// this is actually run on the server! cool.
+// Everything in the loader() is run on the server even though it is in a client component file.
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   invariant(params.contactId, "Missing contactId param");
 
