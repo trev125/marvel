@@ -57,7 +57,7 @@ export default function App() {
             className=" text-left	p-4 text-lg font-semibold text-gray-800 border-b border-gray-200"
             onClick={() => navigate("/")}
           >
-            Remix Contacts
+            Marvel Companion
           </button>
           <div className="p-4 border-b border-gray-200">
             <Form
@@ -97,10 +97,9 @@ export default function App() {
                   <li key={contact.id}>
                     <NavLink
                       className={({ isActive }) =>
-                        `block p-4 text-sm ${
-                          isActive
-                            ? "bg-blue-100 text-blue-600 font-semibold"
-                            : "text-gray-800 hover:bg-gray-100"
+                        `block p-4 text-sm ${isActive
+                          ? "bg-blue-100 text-blue-600 font-semibold"
+                          : "text-gray-800 hover:bg-gray-100"
                         }`
                       }
                       to={`contacts/${contact.id}`}
@@ -124,9 +123,8 @@ export default function App() {
           </footer>
         </div>
         <div
-          className={`flex-grow p-4 ${
-            navigation.state === "loading" ? "opacity-50" : ""
-          }`}
+          className={`flex-grow p-4 ${navigation.state === "loading" ? "opacity-50" : ""
+            }`}
           id="detail"
         >
           <Outlet />
