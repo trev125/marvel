@@ -6,6 +6,7 @@ import type { Character } from "../types/types";
 
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
 import invariant from "tiny-invariant";
+import { i } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
 
 /*
  * Everything in the loader() is run on the server even though it is in a client component file.
@@ -106,15 +107,15 @@ export default function Contact() {
 
           {description ? (
             <p className="text-gray-600 mt-1">{description}</p>
-          ) : null}
+          ) : <i>No Description</i>}
         </div>
       </div>
 
       {/* Horizontal Navigation Menu */}
       <nav className="flex justify-between bg-gray-100 p-4 rounded-lg shadow-md mt-4">
-        {menuItems.map((item) => (
+        {menuItems.map((item, itemIndex) => (
           <button
-            key={item.name}
+            key={itemIndex}
             className={`flex-grow p-2 text-sm ${activeTab === item.name
               ? "bg-blue-100 text-blue-600 font-semibold"
               : "text-gray-800 hover:bg-gray-100"
@@ -129,37 +130,31 @@ export default function Contact() {
       {/* Content Section */}
       <div className="mt-6">
         {menuItems.map(
-          (item) =>
+          (item, itemIndex) =>
             activeTab === item.name && (
-              <div key={item.name}>
-                {item.data.length ? (
-                  <ul className="list-none pl-6 divide-y divide-gray-200">
-                    {item.data.map((entry) => {
-                      const id = entry.resourceURI.match(/\/(\d+)$/)?.[1];
-                      return (
-                        id && (
-                          <li key={entry.name} className="py-2">
-                            <NavLink
-                              to={`/${item.name.toLowerCase()}/${id}`}
-                              className={({ isActive }) =>
-                                `text-sm ${isActive
-                                  ? "text-blue-600 font-semibold"
-                                  : "text-gray-800 hover:text-blue-500"
-                                }`
-                              }
-                            >
-                              {entry.name}
-                            </NavLink>
-                          </li>
-                        )
-                      );
-                    })}
-                  </ul>
-                ) : (
-                  <p className="p-4 text-sm text-gray-500 italic">
-                    No {item.name.toLowerCase()} available
-                  </p>
-                )}
+              <div key={itemIndex}>
+                <ul className="list-none pl-6 divide-y divide-gray-200">
+                  {item.data.map((entry, entryIndex) => {
+                    const id = entry.resourceURI.match(/\/(\d+)$/)?.[1];
+                    return (
+                      id && (
+                        <li key={entryIndex} className="py-2">
+                          <NavLink
+                            to={`/${item.name.toLowerCase()}/${id}`}
+                            className={({ isActive }) =>
+                              `text-sm ${isActive
+                                ? "text-blue-600 font-semibold"
+                                : "text-gray-800 hover:text-blue-500"
+                              }`
+                            }
+                          >
+                            {entry.name}
+                          </NavLink>
+                        </li>
+                      )
+                    );
+                  })}
+                </ul>
               </div>
             )
         )}
