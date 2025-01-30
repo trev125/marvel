@@ -103,6 +103,30 @@ export async function deleteContact(id: string) {
     id: "1009610",
     superName: "Spider-Man",
   },
+  {
+    id: "1009664",
+    superName: "Thor",
+  },
+  {
+    id: "1009351",
+    superName: "Hulk",
+  },
+  {
+    id: "1009189",
+    superName: "Black Widow",
+  },
+  {
+    id: "1009338",
+    superName: "Hawkeye",
+  },
+  {
+    id: "1009187",
+    superName: "Black Panther",
+  },
+  {
+    id: "1009187",
+    superName: "Black Panther",
+  },
 ].forEach((contact) => {
   fakeContacts.create({
     ...contact,

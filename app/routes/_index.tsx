@@ -4,10 +4,11 @@
 
 export default function Index() {
   return (
-    <p id="index-page">
-      This is a demo for Remix.
-      <br />
-      Check out <a href="https://remix.run">the docs at remix.run</a>.
-    </p>
+    <div>
+      <h1>Marvel Companion</h1>
+      <p id="index-page">
+        Discover the heroes of the Marvel Universe and dive into their epic adventures.
+      </p>
+    </div>
   );
 }

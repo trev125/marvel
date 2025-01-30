@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars -- temp ignoring this since we might get to Forms later */
+import React, { useState } from "react";
 import { Form, useLoaderData, NavLink } from "@remix-run/react";
 import { getContact, updateContact } from "../data";
 import type { Character } from "../types/types";
 
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
 import invariant from "tiny-invariant";
+import { i } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
 
 /*
  * Everything in the loader() is run on the server even though it is in a client component file.
@@ -75,6 +77,16 @@ export default function Contact() {
     urls,
   } = character;
 
+  const [activeTab, setActiveTab] = useState("Comics");
+
+  const menuItems = [
+    { name: "Comics", data: comics.items },
+    { name: "Series", data: series.items },
+    { name: "Stories", data: stories.items },
+    { name: "Events", data: events.items },
+  ];
+
+
   return (
     <div
       id="contact"
@@ -95,74 +107,57 @@ export default function Contact() {
 
           {description ? (
             <p className="text-gray-600 mt-1">{description}</p>
-          ) : null}
+          ) : <i>No Description</i>}
         </div>
       </div>
 
-      <div className="mt-4">
-        <h2 className="text-lg font-bold">Comics</h2>
-        <ul className="list-disc pl-6">
-          {comics.items.map((comic) => {
-            const comicId = comic.resourceURI.match(/\/(\d+)$/)?.[1];
-            return (
-              <li key={comic.name}>
-                {comicId && (
-                  <NavLink to={`/comics/${comicId}`}>{comic.name}</NavLink>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+      {/* Horizontal Navigation Menu */}
+      <nav className="flex justify-between bg-gray-100 p-4 rounded-lg shadow-md mt-4">
+        {menuItems.map((item, itemIndex) => (
+          <button
+            key={itemIndex}
+            className={`flex-grow p-2 text-sm ${activeTab === item.name
+              ? "bg-blue-100 text-blue-600 font-semibold"
+              : "text-gray-800 hover:bg-gray-100"
+              }`}
+            onClick={() => setActiveTab(item.name)}
+          >
+            {item.name}
+          </button>
+        ))}
+      </nav>
 
-      <div className="mt-4">
-        <h2 className="text-lg font-bold">Series</h2>
-        <ul className="list-disc pl-6">
-          {series.items.map((seriesItem) => {
-            const seriesId = seriesItem.resourceURI.match(/\/(\d+)$/)?.[1];
-            return (
-              <li key={seriesItem.name}>
-                {seriesId && (
-                  <NavLink to={`/series/${seriesId}`}>
-                    {seriesItem.name}
-                  </NavLink>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-
-      <div className="mt-4">
-        <h2 className="text-lg font-bold">Stories</h2>
-        <ul className="list-disc pl-6">
-          {stories.items.map((story) => {
-            const storyId = story.resourceURI.match(/\/(\d+)$/)?.[1];
-            return (
-              <li key={story.name}>
-                {storyId && (
-                  <NavLink to={`/stories/${storyId}`}>{story.name}</NavLink>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-
-      <div className="mt-4">
-        <h2 className="text-lg font-bold">Events</h2>
-        <ul className="list-disc pl-6">
-          {events.items.map((event) => {
-            const eventId = event.resourceURI.match(/\/(\d+)$/)?.[1];
-            return (
-              <li key={event.name}>
-                {eventId && (
-                  <NavLink to={`/events/${eventId}`}>{event.name}</NavLink>
-                )}
-              </li>
-            );
-          })}
-        </ul>
+      {/* Content Section */}
+      <div className="mt-6">
+        {menuItems.map(
+          (item, itemIndex) =>
+            activeTab === item.name && (
+              <div key={itemIndex}>
+                <ul className="list-none pl-6 divide-y divide-gray-200">
+                  {item.data.map((entry, entryIndex) => {
+                    const id = entry.resourceURI.match(/\/(\d+)$/)?.[1];
+                    return (
+                      id && (
+                        <li key={entryIndex} className="py-2">
+                          <NavLink
+                            to={`/${item.name.toLowerCase()}/${id}`}
+                            className={({ isActive }) =>
+                              `text-sm ${isActive
+                                ? "text-blue-600 font-semibold"
+                                : "text-gray-800 hover:text-blue-500"
+                              }`
+                            }
+                          >
+                            {entry.name}
+                          </NavLink>
+                        </li>
+                      )
+                    );
+                  })}
+                </ul>
+              </div>
+            )
+        )}
       </div>
 
       <div className="mt-4">
